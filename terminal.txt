@@ -1,0 +1,471 @@
+import colorama
+
+import os
+
+import datetime
+
+import shutil
+
+import subprocess
+
+import platform
+
+import psutil
+
+memory = psutil.virtual_memory()
+
+colorama.init()
+
+directory_list = []
+
+directory = ""
+
+colorful = "off"
+
+def change_color():
+
+ if command == "color":
+
+  if argument_1 == "0":
+
+   print("\033[37m")
+
+  if argument_1 == "1":
+
+   print("\033[31m")
+
+  if argument_1 == "2":
+
+   print("\033[34m")
+
+  if argument_1 == "3":
+
+   print("\033[32m")
+
+  if argument_1 == "4":
+
+   print("\033[33m")
+
+  if argument_1 == "5":
+
+   print("\033[35m")
+
+  if argument_1 == "6":
+
+   print("\033[36m")
+
+def version():
+
+ if command == "ver":
+
+  print("current version:")
+
+  print("0.4.8")
+
+def cd():
+
+ global directory
+
+ if command == "cd":
+
+  new_directory = argument_1
+
+  directory_list.append(new_directory)
+
+  directory = "\\".join(directory_list)
+
+def make_dir():
+
+ if command == "mkdir":
+
+  name = argument_1
+
+  path = "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + "\\" + name
+
+  os.mkdir(path)
+
+def dir():
+
+ if command == "dir":
+
+  print()
+
+  for dir in os.listdir("C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory):
+
+   path = "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + "\\" + dir
+
+   if os.path.isdir(path):
+
+     is_dir = " | DIR  | "
+
+   else:
+
+    is_dir = ""
+
+   if os.path.isfile(path):
+
+     is_file = " | FILE | "
+
+   else:
+
+    is_file = ""
+
+   date = datetime.datetime.fromtimestamp(os.path.getctime(path)).strftime("%Y-%m-%d %H:%M:%S")
+
+   if colorful == "on":
+
+    print(date + "\033[93m" + is_dir + "\033[0m" + "\033[97m" + is_file + "\033[0m" + dir)
+
+   else:
+
+    print(date + is_dir + is_file + dir)
+
+  print()
+
+def rename():
+
+ if command == "rename":
+
+  old_name = argument_1
+
+  new_name = argument_2
+
+  os.rename("C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + "\\" + old_name, "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + "\\" + new_name)
+
+def make_file():
+
+ if command == "mkfile":
+
+  name = argument_1
+
+  path = "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + name
+
+  open(path, "x")
+
+def delete():
+
+ if command == "delfile":
+
+  name = argument_1
+
+  path = "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + name
+
+  are_sure = input("are You sure? Y/N?")
+
+  if are_sure == "y":
+
+    os.remove(path)
+
+ if command == "deldir":
+
+  name = argument_1
+
+  path = "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + name
+
+  are_sure = input("are You sure? Y/N?")
+
+  if are_sure == "y":
+
+   shutil.rmtree(path)
+
+def open_file():
+
+ if command == "open":
+
+  name = argument_1
+
+  path = "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + name
+
+  os.startfile(path)
+
+ if command == "python_open":
+
+  name = argument_1
+
+  path = "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + name
+
+  subprocess.run(["python", path])
+
+#if command == "javascript_open":
+
+#name = argument_1
+
+#path = "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + name
+
+#subprocess.run(["node", path])
+
+#if command == "java_open":
+
+#name = argument_1
+
+#path = "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + name
+
+#subprocess.run(["java", path])
+
+def type_file():
+
+ if command == "type":
+
+  name = argument_1
+
+  path = "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + name
+
+  file = open(path, "r")
+
+  type = file.read()
+
+  print()
+
+  print(type)
+
+  print()
+
+def error():
+
+ global directory
+
+ if command not in ["color", "ver", "dir", "mkdir", "cd", "rename", "mkfile", "delfile", "deldir", "open", "python_open", "type", "info", "colorful_on", "colorful_off", "help"]:
+
+  print("\033[31mERROR: INVALID COMMAND\033[0m")
+
+ if not os.path.exists("C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory):
+
+  print()
+
+  print("\033[31mpath " + "C:\\Users\\LENOVO\\Nil\\terminal\\files\\" + directory + " don't exists\033[0m")
+
+  directory = ""
+
+  directory_list.clear
+
+  print()
+
+def info():
+
+ if command == "info":
+
+  print()
+
+  print("OS info:")
+
+  print()
+
+  print(platform.system() + " " + platform.release() + " " + platform.machine())
+
+  print()
+
+  print("PC info:")
+
+  print()
+
+  print("Processor: " + platform.processor())
+
+  print()
+
+  print("CPU cores: " + str(os.cpu_count()))
+
+  print()
+
+  print("Memory:")
+
+  print()
+
+  print("Total: " + str(round(memory.total / (1024 ** 3), 2)) + " GB")
+
+  print()
+
+  if colorful == "on":
+
+   if round(memory.percent, 1) < 70:
+
+    print("Used: " + str(round(memory.used / (1024 ** 3), 2)) + " / " + str(round(memory.total / (1024 ** 3), 2)) + " GB " + str(round(memory.percent, 1)) + "%")
+
+   elif round(memory.percent, 1) < 85:
+
+    print("Used: " + str(round(memory.used / (1024 ** 3), 2)) + " / " + str(round(memory.total / (1024 ** 3), 2)) + " GB " + "\033[43;30m" + str(round(memory.percent, 1)) + "%" + "\033[0m")
+
+   else:
+
+    print("Used: " + str(round(memory.used / (1024 ** 3), 2)) + " / " + str(round(memory.total / (1024 ** 3), 2)) + " GB " + "\033[41;30m" + str(round(memory.percent, 1)) + "%" + "\033[0m")
+
+  else:
+
+   print("Used: " + str(round(memory.used / (1024 ** 3), 2)) + " / " + str(round(memory.total / (1024 ** 3), 2)) + " GB " + str(round(memory.percent, 1)) + "%")
+
+  print()
+
+  print("Available: " + str(round(memory.available / (1024 ** 3), 2)) + " / " + str(round(memory.total / (1024 ** 3), 2)) + " GB " + str(round((100 - memory.percent), 1)) + "%")
+
+  print()
+
+def colorful_mode():
+
+ global colorful
+
+ if command == "colorful_on":
+
+  colorful = "on"
+
+ if command == "colorful_off":
+
+  colorful = "off"
+
+def help():
+
+ if command == "help":
+
+  print()
+
+  print("\033[0mCOMMANDS")
+
+  print()
+
+  print("color 0-6")
+
+  print()
+
+  print("\033[37m0")
+
+  print("\033[31m1")
+
+  print("\033[34m2")
+
+  print("\033[32m3")
+
+  print("\033[33m4")
+
+  print("\033[35m5")
+
+  print("\033[36m6")
+
+  print("\033[0m")
+
+  print("ver")
+
+  print()
+
+  print("mkdir")
+
+  print()
+
+  print("dir")
+
+  print()
+
+  print("cd")
+
+  print()
+
+  print("rename")
+
+  print()
+
+  print("mkfile")
+
+  print()
+
+  print("delfile")
+
+  print()
+
+  print("deldir")
+
+  print()
+
+  print("open")
+
+  print()
+
+  print("type")
+
+  print()
+
+print()
+
+print("TERMINAL TERMINAL  TERMIN    TERM      RMIN  TE  TE    TE    RMIN    TE\033[0m")
+
+print("   TE    TE        RM    TE  RM  IN  TE  AL  RM  RMIN  RM  RM    TE  RM")
+
+print("   RM    RMINALTE  INALTERM  IN    AL    TE  IN  IN  TEIN  INALTERM  IN")
+
+print("   IN    IN        AL  RM    AL          RM  AL  AL    AL  AL    IN  AL")
+
+print("   AL    ALTERMIN  TE    AL  TE          IN  TE  TE    TE  TE    AL  TERMIN")
+
+command_input = input("\\" + directory + ">")
+
+parts = command_input.split()
+
+command = parts[0]
+
+argument_1 = parts[1] if len(parts) > 1 else ""
+
+argument_2 = parts[2] if len(parts) > 2 else ""
+
+change_color()
+
+version()
+
+cd()
+
+make_dir()
+
+dir()
+
+rename()
+
+error()
+
+help()
+
+make_file()
+
+delete()
+
+open_file()
+
+type_file()
+
+info()
+
+colorful_mode()
+
+while True:
+
+ command_input = input("\\" + directory + ">")
+
+ parts = command_input.split()
+
+ command = parts[0]
+
+ argument_1 = parts[1] if len(parts) > 1 else ""
+
+ argument_2 = parts[2] if len(parts) > 2 else ""
+
+ change_color()
+
+ version()
+
+ cd()
+
+ make_dir()
+
+ make_file()
+
+ dir()
+
+ rename()
+
+ delete()
+
+ open_file()
+
+ type_file()
+
+ info()
+
+ help()
+
+ colorful_mode()
+
+ error()
